@@ -1,0 +1,15 @@
+home_position:
+  left_arm:
+    ID1: 2300
+    ID3: 2050
+    ID5: 2030
+    ID7: 1390
+    ID9: 2090
+    ID11: 2520
+  right_arm:
+    ID2: 1795
+    ID4: 2045
+    ID6: 2065
+    ID8: 2705
+    ID10: 2005
+    ID12: 1575
