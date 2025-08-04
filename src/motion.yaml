@@ -1,4 +1,7 @@
 home_position:
+  head:
+    ID15: 2048
+    ID16: 2048
   left_arm:
     ID1: 2300
     ID3: 2050
@@ -13,3 +16,7 @@ home_position:
     ID8: 2705
     ID10: 2005
     ID12: 1575
+  l_gripper:
+    ID13: 2048
+  r_gripper:
+    ID14: 2048
