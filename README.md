@@ -17,7 +17,7 @@ sudo apt install -y \
 ### Python Environment
 ```bash
 
-python3 -m venv headtrack_env
+python3 headtrack_env
 source headtrack_env/bin/activate
 pip install --upgrade pip
 
