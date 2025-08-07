@@ -42,6 +42,20 @@ pip install pyrealsense2
 # YAML & NumPy
 pip install pyyaml numpy
 
+
+sudo apt update
+sudo apt install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libgtk-3-dev \
+    libusb-1.0-0-dev \
+    libglfw3-dev \
+    libopencv-dev \
+    python3-dev \
+    build-essential \
+    cmake
+
+
 ```
 
 
