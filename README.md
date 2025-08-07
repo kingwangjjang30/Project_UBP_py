@@ -14,7 +14,6 @@ sudo apt install -y \
 ```
 
 
-<<<<<<< HEAD
 ### Python Environment
 ```bash
 
@@ -25,8 +24,6 @@ pip install --upgrade pip
 ```
 
 
-=======
->>>>>>> origin/develop
 ### Python Packages
 ```bash
 
@@ -98,7 +95,3 @@ home_position:
     ID14: 2048
 
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/develop
