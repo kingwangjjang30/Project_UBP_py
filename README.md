@@ -14,16 +14,6 @@ sudo apt install -y \
 ```
 
 
-### Python Environment
-```bash
-
-python3 -m venv headtrack_env
-source headtrack_env/bin/activate
-pip install --upgrade pip
-
-```
-
-
 ### Python Packages
 ```bash
 
@@ -42,7 +32,7 @@ pip install pyrealsense2
 # YAML & NumPy
 pip install pyyaml numpy
 
-
+# Dependency
 sudo apt update
 sudo apt install -y \
     libgl1-mesa-glx \
