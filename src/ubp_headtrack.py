@@ -1,7 +1,6 @@
 import time
 import cv2
 import numpy as np
-import yaml
 from ultralytics import YOLO
 from dynamixel_sdk import *
 import pyrealsense2 as rs
@@ -49,9 +48,6 @@ class PID:
         self.prev_error = error
         return output
 
-
-
-
 # ----------------------------
 # 간단한 SORT 구현
 # ----------------------------
@@ -93,7 +89,6 @@ class Track:
         self.kf.predict()
         x, y, s, r = self.kf.x[:4]
 
-        # NaN 방지
         s = max(float(s), 1e-6)
         r = max(float(r), 1e-6)
 
@@ -101,7 +96,6 @@ class Track:
         h = s / w
         self.bbox = [x-w/2, y-h/2, x+w/2, y+h/2]
         return self.bbox
-
 
     def update(self, bbox):
         x1,y1,x2,y2 = bbox[:4]
@@ -158,7 +152,6 @@ class SimpleSORT:
             unmatched_trks = list(range(len(trks)))
 
         return matches, np.array(unmatched_dets), np.array(unmatched_trks)
-
 
     def update(self, detections):
         predictions = []
@@ -231,7 +224,6 @@ def initialize_ekf():
     kf.Q *= 0.01
     return kf
 
-
 # ----------------------------
 # 보조 함수
 # ----------------------------
@@ -275,12 +267,10 @@ def select_and_filter_target(tracks, kf):
     filtered_cx = kf.x[0].item()
     filtered_cy = kf.x[1].item()
 
-    # NaN 방어
     if np.isnan(filtered_cx) or np.isnan(filtered_cy):
         return None
 
     return int(filtered_cx), int(filtered_cy)
-
 
 # ----------------------------
 # 메인 루프
@@ -293,25 +283,16 @@ def main():
     tracker = initialize_sort_tracker()
     kf = initialize_ekf()
 
-    # 2. motion.yaml 로드 후 홈포지션 이동
-    with open("motion.yaml", "r") as f:
-        motion_data = yaml.safe_load(f)
-    home_data = motion_data["home_position"]
-
-    # 팔 + 그리퍼 기본 위치
-    base_positions = {}
-    for section in ["left_arm", "right_arm", "l_gripper", "r_gripper"]:
-        for k, v in home_data[section].items():
-            base_positions[int(k.replace("ID",""))] = v
-
-    move_positions(groupSyncWrite, base_positions)
+    # 2. 모든 서보를 원점으로 이동
+    all_home = {dxl_id: HOME_POSITION for dxl_id in BODY_IDS + HEAD_IDS}
+    move_positions(groupSyncWrite, all_home)
     time.sleep(2)
 
-    # PID 초기화
+    # PID 초기화 (헤드도 원점에서 시작)
     yaw_pid = PID(0.08, 0, 0.02)
     pitch_pid = PID(0.08, 0, 0.02)
-    yaw_pos = home_data["head"]["ID15"]
-    pitch_pos = home_data["head"]["ID16"]
+    yaw_pos = HOME_POSITION
+    pitch_pos = HOME_POSITION
 
     last_time = time.time()
 
@@ -345,8 +326,8 @@ def main():
                 pitch_pos += int((HOME_POSITION - pitch_pos)*0.05)
 
             # 범위 제한
-            yaw_pos = max(HOME_POSITION-MAX_TICK_OFFSET, min(HOME_POSITION+MAX_TICK_OFFSET, yaw_pos))
-            pitch_pos = max(HOME_POSITION-MAX_TICK_OFFSET, min(HOME_POSITION+MAX_TICK_OFFSET, pitch_pos))
+            yaw_pos = max(HOME_POSITION - MAX_TICK_OFFSET, min(HOME_POSITION + MAX_TICK_OFFSET, yaw_pos))
+            pitch_pos = max(HOME_POSITION - MAX_TICK_OFFSET, min(HOME_POSITION + MAX_TICK_OFFSET, pitch_pos))
 
             # Dynamixel 명령 전송
             move_positions(groupSyncWrite, {YAW_ID: yaw_pos, PITCH_ID: pitch_pos})
